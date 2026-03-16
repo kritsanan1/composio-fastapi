@@ -41,3 +41,31 @@ class FetchEmailsRequest(BaseModel):
     )
 
 
+class GPTCustomization(BaseModel):
+    purpose: str = Field(
+        ...,
+        description="High-level purpose of the customized GPT behavior.",
+    )
+    instructions: str = Field(
+        ...,
+        description="Detailed system instructions for the assistant.",
+    )
+    model: str = Field(
+        "gpt-4.1",
+        description="OpenAI model to use for this customized GPT.",
+    )
+
+
+class RunCustomGptRequest(BaseModel):
+    user_id: str = Field(
+        ...,
+        description="The user id of the user to run the custom GPT for.",
+    )
+    prompt: str = Field(
+        ...,
+        description="The user message for the customized GPT.",
+    )
+    customization: GPTCustomization = Field(
+        ...,
+        description="Customization profile that defines this GPT's behavior.",
+    )

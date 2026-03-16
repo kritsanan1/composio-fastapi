@@ -8,6 +8,8 @@ def run_gmail_agent(
     openai_client: OpenAI,
     user_id: str,
     prompt: str,
+    system_prompt: str,
+    model: str = "gpt-4.1",
 ):
     """
     Run the Gmail agent using composio and openai clients.
@@ -23,9 +25,12 @@ def run_gmail_agent(
     )
     # Step 2: Use OpenAI to generate a response based on the prompt and available tools
     response = openai_client.chat.completions.create(
-        model="gpt-4.1",
+        model=model,
         tools=tools,
-        messages=[{"role": "user", "content": prompt}],
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt},
+        ],
     )
     # Step 3: Handle tool calls with Composio and return the result
     result = composio_client.provider.handle_tool_calls(response=response, user_id=user_id)

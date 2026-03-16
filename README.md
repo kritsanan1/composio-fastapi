@@ -154,6 +154,26 @@ def _create_connection(
 
 Now, you can make a request to this endpoint on your client app, and your user will get a URL which they can use to authenticate.
 
+## Build a customized GPT for a specific purpose
+
+You can also run a custom GPT profile by passing purpose-specific instructions and a model at runtime.
+
+```bash
+curl -X POST http://localhost:8000/agent/custom \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "default",
+    "prompt": "Draft a polite follow-up email for delayed invoice #123",
+    "customization": {
+      "purpose": "Finance assistant for billing follow-ups",
+      "instructions": "Be concise, professional, and include a clear request for payment timeline.",
+      "model": "gpt-4.1"
+    }
+  }'
+```
+
+The API combines `purpose` and `instructions` into a system prompt, then executes with the Gmail tools configured through Composio.
+
 ## Set Up FastAPI service
 
 We will use [`FastApi`](https://fastapi.tiangolo.com/) to build an HTTP service that authenticates your users and lets them interact with your agent. This guide will provide best practices for using composio client in production environments.
