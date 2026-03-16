@@ -11,6 +11,7 @@ from .models import (
     CreateConnectionRequest,
     WaitForConnectionRequest,
     FetchEmailsRequest,
+    RunCustomGptRequest,
 )
 from ..agent import run_gmail_agent
 from .actions import composio_fetch_emails
@@ -120,6 +121,38 @@ def create_app():
             openai_client=openai_client,
             user_id=user_id,
             prompt=request.prompt,
+            system_prompt="You are a helpful Gmail assistant.",
+        )
+        return result
+
+    # Endpoint: Run a customized GPT profile for a specific purpose
+    @app.post("/agent/custom")
+    def _run_custom_gpt(
+        request: RunCustomGptRequest,
+        composio_client: ComposioClient,
+        openai_client: OpenAIClient,
+    ) -> List[ToolExecutionResponse]:
+        """
+        Run a customized GPT profile against the Gmail toolset.
+        """
+        user_id = request.user_id
+
+        # Validate the user id before proceeding
+        validate_user_id(user_id=user_id, composio_client=composio_client)
+
+        # Build a system prompt that encodes the customization intent
+        system_prompt = (
+            f"Purpose: {request.customization.purpose}\n"
+            f"Instructions: {request.customization.instructions}"
+        )
+
+        result = run_gmail_agent(
+            composio_client=composio_client,
+            openai_client=openai_client,
+            user_id=user_id,
+            prompt=request.prompt,
+            system_prompt=system_prompt,
+            model=request.customization.model,
         )
         return result
 
