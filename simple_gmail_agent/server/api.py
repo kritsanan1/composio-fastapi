@@ -52,8 +52,7 @@ def create_app():
         """
         Check if a connection exists for a given user id.
         """
-        # For demonstration, using a default user_id. Replace with real user logic in production.
-        user_id = "default"
+        user_id = request.user_id
 
         # Check if a connection exists for the user
         return {
@@ -109,8 +108,7 @@ def create_app():
         """
         Run the Gmail agent for a given user id and prompt.
         """
-        # For demonstration, using a default user_id. Replace with real user logic in production.
-        user_id = "default"
+        user_id = request.user_id
 
         # Validate the user id before proceeding
         user_id = validate_user_id(user_id=user_id, composio_client=composio_client)
